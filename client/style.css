@@ -1,0 +1,23 @@
+html,
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#mazeCanvas {
+    display: block;
+    width: 100%;
+}
+
+#controlBtns {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding-top: 20px;
+}
+
+#controlBtns * {
+    width: 45%;
+    font-size: x-large;
+}
