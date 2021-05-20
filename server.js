@@ -3,7 +3,7 @@
 const express = require("express");
 
 const app = express();
-const port = 42069;
+const port = process.env.PORT || 42069
 
 app.use(express.static("client", { maxage: 0 }));
 
