@@ -27,6 +27,10 @@ document.getElementById("setHome").onclick = function () {
 
 document.getElementById("locUpdate").onclick = function () {
     step();
+    document.getElementById("pings").innerHTML += currLoc.latitude;
+    document.getElementById("pings").innerHTML += "&nbsp;";
+    document.getElementById("pings").innerHTML += currLoc.longitude;
+    document.getElementById("pings").innerHTML += "<br>";
 };
 
 function setup() {
