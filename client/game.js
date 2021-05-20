@@ -1,4 +1,3 @@
-// import { io } from "socket.io-client";
 import * as Loc from "./location.js"
 import * as Map from "./map-display.js"
 
@@ -10,8 +9,8 @@ var locData = {
     server: null
 };
 
-// Connect to the server
-// const socket = io();
+// Connect to the socket.io server
+const socket = io();
 
 // Lobby //
 function lobbyError(error) {
@@ -26,11 +25,8 @@ function registerPlayer(e) {
     // TODO stack group
 
     var locationErr = Loc.setup(onLocUpdate, lobbyError, () => {
-        // callback for when location setup is successful
-
-        // Attempt to register this player
-        // socket.emit("register", username);
-        startGame();
+        // When location setup is successful, attempt to register this player
+        socket.emit("register", username);
     });
 }
 document.getElementById("lobbyForm").addEventListener("submit", registerPlayer);
@@ -40,10 +36,10 @@ function startGame() {
     document.getElementById("lobby").hidden = true;
     document.getElementById("game").hidden = false;
 
-    // TODO socket handlers
+    socket.on("serverUpdate", onServerUpdate);
 
     window.setInterval(() => {
-        // TODO update loc, send relative loc to server
+        socket.emit("clientUpdate", locData.local);
     }, pushInterval);
 
     // buttons
@@ -53,12 +49,11 @@ function startGame() {
             Loc.resetHome();
         }
     };
-    // TODO RESET
+    // TODO reset button?
 }
 
-// socket.on("registerSuccess", startGame);
-// socket.on("registerFailed", lobbyError);
-
+socket.on("registerSuccess", startGame);
+socket.on("registerFailed", lobbyError);
 
 // Graphics updates prompted by either (local) loc change or server ping
 function graphicsStep() {
@@ -69,7 +64,9 @@ function onLocUpdate(newLoc) {
     locData.local = newLoc;
     graphicsStep();
 }
-function onServerPing() {
-    // TODO
+function onServerUpdate(serverData) {
+    locData.server = serverData;
+
+    // TODO list other users somewhere else in the interface?
     graphicsStep();
 }
