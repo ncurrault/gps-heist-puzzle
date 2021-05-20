@@ -62,8 +62,8 @@ function step() {
         ctx.fill();
 
         // current dot
-        var currX = (currLoc.latitude - homeLoc.latitude) / mapSize + midX;
-        var currY = (currLoc.longitude - homeLoc.longitude) / mapSize + midY;
+        var currX = canvas.width * (currLoc.latitude - homeLoc.latitude) / mapSize + midX;
+        var currY = canvas.height * (currLoc.longitude - homeLoc.longitude) / mapSize + midY;
 
         ctx.beginPath();
         ctx.arc(currX, currY, currRadius, 0, 2 * Math.PI, false);
