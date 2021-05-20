@@ -2,22 +2,36 @@
 import * as Loc from "./location.js"
 import * as Map from "./map-display.js"
 
-// How often to tell our current tilt to the server; ms
-const pushInterval = 5000;
+// How often to push/pull data from the server; ms
+const pushInterval = 1000;
+
+var locData = {
+    local: null,
+    server: null
+};
 
 // Connect to the server
 // const socket = io();
 
 // Lobby //
+function lobbyError(error) {
+    document.getElementById("lobbyError").hidden = false;
+    document.getElementById("lobbyError").innerText = error;
+    console.log(error);
+}
 // See: https://stackoverflow.com/questions/5384712/intercept-a-form-submit-in-javascript-and-prevent-normal-submission
 function registerPlayer(e) {
     e.preventDefault();
     const username = e.target[0].value;
     // TODO stack group
 
-    // Attempt to register this player
-    // socket.emit("register", username);
-    startGame();
+    var locationErr = Loc.setup(onLocUpdate, lobbyError, () => {
+        // callback for when location setup is successful
+
+        // Attempt to register this player
+        // socket.emit("register", username);
+        startGame();
+    });
 }
 document.getElementById("lobbyForm").addEventListener("submit", registerPlayer);
 
@@ -26,40 +40,36 @@ function startGame() {
     document.getElementById("lobby").hidden = true;
     document.getElementById("game").hidden = false;
 
-    // TODO socoket handlers
-    // window.setInterval(() => {
-    //     // TODO update loc, send relative loc to server
-    // }, pushInterval);
+    // TODO socket handlers
 
-    // TODO reset button
+    window.setInterval(() => {
+        // TODO update loc, send relative loc to server
+    }, pushInterval);
+
+    // buttons
+    document.getElementById("setHome").onclick = function () {
+        var response = confirm("Are you sure you want to move to the origin?");
+        if (response) {
+            Loc.resetHome();
+        }
+    };
+    // TODO RESET
 }
 
 // socket.on("registerSuccess", startGame);
-// socket.on("registerFailed", (error) => {
-//     document.getElementById("lobbyError").hidden = false;
-//     document.getElementById("lobbyError").innerText = error;
-//     console.log(error);
-// });
+// socket.on("registerFailed", lobbyError);
 
 
-// Main loop
-function step() {
-    Loc.queryLocation();
-    Map.drawCanvas({
-        currLoc: Loc.currLoc,
-        homeLoc: Loc.homeLoc
-    });
+// Graphics updates prompted by either (local) loc change or server ping
+function graphicsStep() {
+    Map.drawCanvas(locData);
 }
 
-document.getElementById("setHome").onclick = function () {
-    Loc.resetHome();
-    // TODO extra confirmation, because hitting this mid-maze could be bad
-};
-
-document.getElementById("locUpdate").onclick = function () {
-    step();
-    document.getElementById("pings").innerHTML += Loc.currLoc.latitude;
-    document.getElementById("pings").innerHTML += "&nbsp;";
-    document.getElementById("pings").innerHTML += Loc.currLoc.longitude;
-    document.getElementById("pings").innerHTML += "<br>";
-};
+function onLocUpdate(newLoc) {
+    locData.local = newLoc;
+    graphicsStep();
+}
+function onServerPing() {
+    // TODO
+    graphicsStep();
+}

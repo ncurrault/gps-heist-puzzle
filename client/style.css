@@ -20,10 +20,10 @@ body {
 }
 
 #controlBtns * {
-    width: 45%;
+    width: 95%;
+    /*width: 45%;*/
     font-size: x-large;
 }
-
 
 
 body {

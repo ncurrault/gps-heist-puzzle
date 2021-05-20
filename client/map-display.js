@@ -5,11 +5,6 @@ const currRadius = 10;
 const mapSize = 0.003614; // approx. quarter mile
 
 function drawCanvas(locData) {
-    // TODO data structure that gives *everyone's* relative position
-    // and move the rel. pos. calculation out of this file
-    var currLoc = locData.currLoc;
-    var homeLoc = locData.homeLoc;
-
     canvas.height = canvas.width;
 
     var ctx = canvas.getContext("2d");
@@ -29,15 +24,16 @@ function drawCanvas(locData) {
     ctx.fill();
 
     // current dot
-    var currX = canvas.width * (currLoc.latitude - homeLoc.latitude) / mapSize + midX;
-    var currY = canvas.height * (currLoc.longitude - homeLoc.longitude) / mapSize + midY;
+    var currX = canvas.width * locData.local.x / mapSize + midX;
+    var currY = canvas.height * locData.local.y / mapSize + midY;
 
     ctx.beginPath();
     ctx.arc(currX, currY, currRadius, 0, 2 * Math.PI, false);
     ctx.fillStyle = 'red';
     ctx.fill();
 
-    // TODO label with initials? and also draw others
+    // TODO draw other users, each labelled with initials
+    // TODO draw mean pos as a dot
 }
 
 export { drawCanvas };
