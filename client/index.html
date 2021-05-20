@@ -1,25 +1,59 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
-        <title>GPS Maze Proof of Concept</title>
+        <meta charset="UTF-8" />
+
+        <title>XIT - Geolocation Training</title>
+
         <link rel="stylesheet" href="style.css" />
-        <script src="client.js" type="module" defer></script>
+        <script src="game.js" type="module" defer></script>
         <meta
             name="viewport"
             content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
         />
+
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Zen+Dots&display=swap"
+            rel="stylesheet"
+        />
     </head>
 
-    <body id="body">
-        <canvas id="mazeCanvas"></canvas>
+    <body>
+        <div id="lobby">
+            <div id="lobby-inner">
+                <h1>Geolocation Training Module</h1>
+                <h2>&copy; Xavier Institute of Technology</h2>
+                <!-- TODO x-men logo -->
+                <p>
+                    TODO FLAVORTEXT
+                </p>
 
-        <div id="controlBtns">
-            <button id="setHome">Reset Location</button>
-            <button id="locUpdate">Update Location</button>
-            <!-- auto-update -->
-            <!-- help button? -->
+                <hr />
+
+                <form id="lobbyForm">
+                    <p>Enter your initials:</p>
+                    <input type="text" name="username" />
+                    <!-- TODO select stack group -->
+                    <!-- TODO select level? -->
+                    <button type="submit" id="startGame">Start training</button>
+                </form>
+                <p id="lobbyError" hidden></p>
+            </div>
         </div>
 
-        <div id="pings" class="debug">
+        <div id="game" hidden>
+            <canvas id="mazeCanvas"></canvas>
+
+            <div id="controlBtns">
+                <button id="setHome">Reset Location</button>
+                <button id="locUpdate">Update Location</button>
+                <!-- auto-update -->
+                <!-- help button? -->
+            </div>
+
+            <div id="pings" class="debug">
+            </div>
         </div>
     </body>
 </html>
