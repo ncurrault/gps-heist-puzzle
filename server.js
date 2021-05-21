@@ -86,6 +86,27 @@ function sendUpdate() {
 }
 setInterval(sendUpdate, pushInterval);
 
+
+// app.get("/reset", (req, res) => {
+//     gameData = {
+//         players: {},
+//         center: {x: 0.0, y: 0.0},
+//         playerSockets: {}
+//     };
+//
+//     res.send("Successfully reset server!");
+// });
+
+
+app.get("/list", (req, res) => {
+    var ret = "";
+    for (let p in gameData.players) {
+        ret += `<li>${p}</li>`;
+    }
+    res.send(`<h1>Current players</h1><ul>${ret}</ul>`);
+});
+
+
 // TODO admin API for resetting game
 // TODO 2: way to watch without playing? good for sherpas
 
