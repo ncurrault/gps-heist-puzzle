@@ -20,6 +20,10 @@ var gameData = {
 function recomputeCenter() {
     var xSum = 0.0, ySum = 0.0, n = 0;
     for (let p in gameData.players) {
+        if (! (p in gameData.players)) {
+            continue; // avoid crashing server in (rare?) cases
+        }
+
         xSum += gameData.players[p].x;
         ySum += gameData.players[p].y;
         n++;
@@ -35,8 +39,8 @@ io.on("connection", (socket) => {
     console.log(`[${socket.id}] Client connected.`);
 
     socket.on("disconnect", () => {
-        delete gameData.players[socket.username];
         delete gameData.playerSockets[socket.username];
+        delete gameData.players[socket.username];
 
         console.log(`[${socket.id}] Client disconnected.`);
     });
@@ -47,7 +51,7 @@ io.on("connection", (socket) => {
             return;
         }
 
-        gameData.players[username] = null;
+        gameData.players[username] = {x: 0.0, y: 0.0};
         gameData.playerSockets[username] = socket;
 
         socket.username = username;
@@ -59,6 +63,10 @@ io.on("connection", (socket) => {
     });
 
     socket.on("clientUpdate", (data) => {
+        if (! socket.username in gameData.players) {
+            return; // avoid crashing server in (rare?) cases
+        }
+
         gameData.players[socket.username] = data;
         recomputeCenter();
     });
@@ -67,6 +75,10 @@ io.on("connection", (socket) => {
 // Periodically send control and reset signal to all in all games
 function sendUpdate() {
     for (let user in gameData.players) {
+        if (! (user in gameData.playerSockets)) {
+            continue; // avoid crashing server in (rare?) cases
+        }
+
         gameData.playerSockets[user].emit("serverUpdate", {
             players: gameData.players,
             center: gameData.center
