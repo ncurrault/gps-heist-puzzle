@@ -73,16 +73,25 @@ function revealDot(x, y){
 }
 
 function revealPath(x1, y1, x2, y2) {
-    if (x1 > x2) {
-        return revealPath(x2, y2, x1, y1)
-    }
-
     var slope = (y2 - y1) / (x2 - x1);
-    for (var x = Math.floor(x1); x < x2; x++) {
-        revealDot(x, slope * (x - x1) + y1);
-    }
 
-    // TODO steep/vertical lines
+    if (slope < 1 && slope > -1) {
+        if (x1 > x2) {
+            return revealPath(x2, y2, x1, y1)
+        }
+
+        for (var x = Math.floor(x1); x < x2; x++) {
+            revealDot(x, slope * (x - x1) + y1);
+        }
+    } else {
+        if (y1 > y2) {
+            return revealPath(x2, y2, x1, y1)
+        }
+        var invSlope = (x2 - x1) / (y2 - y1);
+        for (var y = Math.floor(y1); y < y2; y++) {
+            revealDot(invSlope * (y - y1) + x1, y);
+        }
+    }
 }
 
 function update(locData) {
