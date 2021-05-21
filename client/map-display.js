@@ -34,6 +34,15 @@ function dottedLine(x1, y1, x2, y2, col) {
     mapCtx.stroke();
 }
 
+function solidLine(x1, y1, x2, y2, col) {
+    mapCtx.setLineDash([0]);
+    mapCtx.beginPath();
+    mapCtx.moveTo(x1, y1);
+    mapCtx.lineTo(x2, y2);
+    mapCtx.strokeStyle = col;
+    mapCtx.stroke();
+}
+
 function text(x, y, col, text) {
     mapCtx.font = "12px Arial";
     mapCtx.textAlign = "center";
@@ -101,7 +110,7 @@ function update(locData) {
 
         // draw users
         for (let p in locData.server.players) {
-            dottedLine(transformX(locData.server.players[p].x),
+            solidLine(transformX(locData.server.players[p].x),
                 transformY(locData.server.players[p].y), centerX, centerY, 'red');
         }
         for (let p in locData.server.players) {
