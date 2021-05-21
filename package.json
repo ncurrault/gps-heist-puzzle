@@ -1,5 +1,5 @@
 {
-  "name": "outside-maze",
+  "name": "gps-heist-puzzle",
   "version": "0.0.1",
   "description": "Outdoor GPS puzzle for Ditch Day 2021",
   "main": "server.js",
@@ -11,7 +11,8 @@
   "author": "Nicholas Currault",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "socket.io": "^4.0.1"
   },
   "devDependencies": {
     "ngrok": "^4.0.1",
