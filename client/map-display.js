@@ -33,9 +33,11 @@ function dottedLine(canvas, x1, y1, x2, y2, col) {
     ctx.stroke();
 }
 
-function text(canvas, x, y, text) {
+function text(canvas, x, y, col, text) {
     var ctx = canvas.getContext("2d");
     ctx.font = "12px Arial";
+    ctx.textAlign = "center";
+    ctx.fillStyle = col;
     ctx.fillText(text, x, y);
 }
 
@@ -73,7 +75,7 @@ function drawCanvas(locData) {
                 continue; // avoid mysterious "undefined" label
             }
             text(canvas, transformX(locData.server.players[p].x),
-                transformY(locData.server.players[p].y), p);
+                transformY(locData.server.players[p].y), 'white', p);
         }
     }
 }
