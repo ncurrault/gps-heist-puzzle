@@ -20,29 +20,9 @@ body {
     background-size: cover;
 }
 
-#controlBtns {
-    display: block;
-    width: 100%;
-    text-align: center;
-    padding-top: 20px;
-}
-
-#controlBtns * {
-    width: 95%;
-    /*width: 45%;*/
-    font-size: x-large;
-}
-
 
 body {
     font-family: "Zen Dots", cursive;
-    /* TODO grid/location pin type image */
-    /*
-    background-image: url("/resources/background.png");
-    background-repeat: no-repeat;
-    background-size: auto 100%;
-    background-color: #d0f6ff;
-    */
 }
 
 #game {

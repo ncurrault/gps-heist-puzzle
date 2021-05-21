@@ -31,7 +31,6 @@ function recomputeCenter() {
     if (n == 0)
         n++;
     gameData.center = {x: xSum / n, y: ySum / n};
-    // TODO tracking previous centers may be necessary to reveal codeword
 }
 
 // socket.io
