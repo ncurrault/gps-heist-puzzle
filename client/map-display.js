@@ -35,7 +35,7 @@ function dottedLine(canvas, x1, y1, x2, y2, col) {
 
 function text(canvas, x, y, text) {
     var ctx = canvas.getContext("2d");
-    ctx.font = "15px Arial";
+    ctx.font = "12px Arial";
     ctx.fillText(text, x, y);
 }
 
@@ -55,19 +55,23 @@ function drawCanvas(locData) {
     dot(canvas, transformX(locData.local.x), transformY(locData.local.y),
         5, 'blue');
 
-    // mean of player positions
-    var centerX = transformX(locData.server.center.x),
-        centerY = transformY(locData.server.center.y);
-    dot(canvas, centerX, centerY, 5, 'red');
+    if (locData.server) {
+        // avoid error when rendering before first server ping
 
-    // draw users
-    for (let p in locData.server.players) {
-        dottedLine(canvas, transformX(locData.server.players[p].x),
-            transformY(locData.server.players[p].y), centerX, centerY, 'red');
-    }
-    for (let p in locData.server.players) {
-        text(canvas, transformX(locData.server.players[p].x),
-            transformY(locData.server.players[p].y), p);
+        // mean of player positions
+        var centerX = transformX(locData.server.center.x),
+            centerY = transformY(locData.server.center.y);
+        dot(canvas, centerX, centerY, 5, 'red');
+
+        // draw users
+        for (let p in locData.server.players) {
+            dottedLine(canvas, transformX(locData.server.players[p].x),
+                transformY(locData.server.players[p].y), centerX, centerY, 'red');
+        }
+        for (let p in locData.server.players) {
+            text(canvas, transformX(locData.server.players[p].x),
+                transformY(locData.server.players[p].y), p);
+        }
     }
 }
 
