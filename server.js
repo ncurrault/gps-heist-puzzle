@@ -18,7 +18,16 @@ var gameData = {
 };
 
 function recomputeCenter() {
-    // TODO
+    var xSum = 0.0, ySum = 0.0, n = 0;
+    for (let p in gameData.players) {
+        xSum += gameData.players[p].x;
+        ySum += gameData.players[p].y;
+        n++;
+    }
+    if (n == 0)
+        n++;
+    gameData.center = {x: xSum / n, y: ySum / n};
+    // TODO tracking previous centers may be necessary to reveal codeword
 }
 
 // socket.io
@@ -26,14 +35,15 @@ io.on("connection", (socket) => {
     console.log(`[${socket.id}] Client connected.`);
 
     socket.on("disconnect", () => {
-        // TODO remove user, recompute?
+        delete gameData.players[socket.username];
+        delete gameData.playerSockets[socket.username];
+
         console.log(`[${socket.id}] Client disconnected.`);
     });
 
     socket.on("register", (username) => {
         if (Object.keys(gameData.players).includes(username)) {
             socket.emit("registerFailed", "A player has already registered with those initials.");
-            // TODO check if this causes problems when trying to reconnect
             return;
         }
 
