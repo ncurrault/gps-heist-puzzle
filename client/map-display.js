@@ -33,23 +33,42 @@ function dottedLine(canvas, x1, y1, x2, y2, col) {
     ctx.stroke();
 }
 
+function text(canvas, x, y, text) {
+    var ctx = canvas.getContext("2d");
+    ctx.font = "15px Arial";
+    ctx.fillText(text, x, y);
+}
+
 function drawCanvas(locData) {
     canvas.height = canvas.width;
     clear(canvas);
 
     var midX = canvas.width / 2, midY = canvas.height / 2;
+    var transformX = (x) => canvas.width * x / mapSize + midX;
+    var transformY = (y) => canvas.height * y / mapSize + midY;
 
-    // home
+    // emphasize home with crosshairs through center
     dottedLine(canvas, midX, 0, midX, canvas.height, 'white');
     dottedLine(canvas, 0, midY, canvas.width, midY, 'white');
 
-    // current dot
-    var currX = canvas.width * locData.local.x / mapSize + midX;
-    var currY = canvas.height * locData.local.y / mapSize + midY;
-    dot(canvas, currX, currY, 5, 'blue');
+    // current location dot
+    dot(canvas, transformX(locData.local.x), transformY(locData.local.y),
+        5, 'blue');
 
-    // TODO draw other users, each labelled with initials
-    // TODO draw mean pos as a dot
+    // mean of player positions
+    var centerX = transformX(locData.server.center.x),
+        canterY = transformY(locData.server.center.y);
+    dot(canvas, centerX, centerY, 5, 'red');
+
+    // draw users
+    for (let p in locData.server.players) {
+        dottedLine(canvas, transformX(locData.server.players[p].x),
+            transformY(locData.server.players[p].y), centerX, centerY, 'red');
+    }
+    for (let p in locData.server.players) {
+        text(canvas, transformX(locData.server.players[p].x),
+            transformY(locData.server.players[p].y), p);
+    }
 }
 
 export { drawCanvas };
