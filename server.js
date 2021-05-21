@@ -5,7 +5,7 @@ const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
-const port = process.env.PORT || 42069
+const port = process.env.PORT || 42069;
 const pushInterval = 1000; // How often to push data to all players, ms
 
 app.use(express.static("client", { maxage: 0 }));
@@ -20,7 +20,7 @@ var gameData = {
 function recomputeCenter() {
     var xSum = 0.0, ySum = 0.0, n = 0;
     for (let p in gameData.players) {
-        if (! (p in gameData.players)) {
+        if (! gameData.players[p]) {
             continue; // avoid crashing server in (rare?) cases
         }
 
@@ -75,7 +75,7 @@ io.on("connection", (socket) => {
 // Periodically send control and reset signal to all in all games
 function sendUpdate() {
     for (let user in gameData.players) {
-        if (! (user in gameData.playerSockets)) {
+        if (! gameData.playerSockets[user]) {
             continue; // avoid crashing server in (rare?) cases
         }
 
