@@ -53,6 +53,9 @@ function startGame() {
 
 socket.on("registerSuccess", startGame);
 socket.on("registerFailed", lobbyError);
+socket.on("disconnect", () => {
+    alert("Server connection lost");
+});
 
 // Graphics updates prompted by either (local) loc change or server ping
 function graphicsStep() {

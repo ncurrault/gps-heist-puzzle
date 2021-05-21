@@ -87,15 +87,20 @@ function sendUpdate() {
 setInterval(sendUpdate, pushInterval);
 
 
-// app.get("/reset", (req, res) => {
-//     gameData = {
-//         players: {},
-//         center: {x: 0.0, y: 0.0},
-//         playerSockets: {}
-//     };
-//
-//     res.send("Successfully reset server!");
-// });
+app.get("/reset", (req, res) => {
+    for (let user in gameData.players) {
+        if (! gameData.playerSockets[user]) {
+            continue; // avoid crashing server in (rare?) cases
+        }
+
+        gameData.playerSockets[user].disconnect();
+        delete gameData.playerSockets[user];
+        delete gameData.players[user];
+    }
+
+    gameData.center = {x: 0.0, y: 0.0};
+    res.send("Successfully reset server!");
+});
 
 
 app.get("/list", (req, res) => {
