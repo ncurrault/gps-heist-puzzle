@@ -24,16 +24,22 @@ function registerPlayer(e) {
     const username = e.target[0].value;
     // TODO stack group
 
+    /* 3 things have to go right for a user to start playing:
+     * - location services are a-ok
+     * - the map cover image loads successfully
+     * - the socket server responds with success (i.e. username isn't taken)
+     * Check everything we can locally before trying to register with the server
+     */
+
     var locationErr = Loc.setup(onLocUpdate, lobbyError, () => {
-        // When location setup is successful, attempt to register this player
-        socket.emit("register", username);
+        Map.setup(() => {
+            socket.emit("register", username);
+        }, lobbyError);
     });
 }
 document.getElementById("lobbyForm").addEventListener("submit", registerPlayer);
 
 function startGame() {
-    Map.setup();
-
     // Replace lobby HTML with game HTML
     document.getElementById("lobby").hidden = true;
     document.getElementById("game").hidden = false;
@@ -43,14 +49,6 @@ function startGame() {
     window.setInterval(() => {
         socket.emit("clientUpdate", locData.local);
     }, pushInterval);
-
-    // buttons
-    document.getElementById("setHome").onclick = function () {
-        var response = confirm("Are you sure you want to move to the origin?");
-        if (response) {
-            Loc.resetHome();
-        }
-    };
 }
 
 socket.on("registerSuccess", startGame);

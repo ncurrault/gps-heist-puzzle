@@ -41,16 +41,17 @@ function text(x, y, col, text) {
     mapCtx.fillText(text, x, y);
 }
 
-function setup() {
-    mapCan.height = mapCan.width;
-    revealCan.height = revealCan.width;
-    // TODO better aspect ratios (pending puzzle redesign)
-
+function setup(successCallback, errorCallback) {
     var img = new Image();
 
     img.onload = function() {
         revealCtx.drawImage(img, 0, 0, revealCan.width, revealCan.height);
+        successCallback();
+    };
+    img.onerror = function () {
+        errorCallback("Failed to load cover image for puzzle.")
     }
+    // ensure that we don't spoil the puzzle if cover image fails somehow
     img.src = '/resources/cover.png';
 }
 
