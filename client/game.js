@@ -51,7 +51,6 @@ function startGame() {
             Loc.resetHome();
         }
     };
-    // TODO reset button?
 }
 
 socket.on("registerSuccess", startGame);

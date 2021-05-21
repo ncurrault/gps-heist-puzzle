@@ -87,6 +87,9 @@ function sendUpdate() {
 }
 setInterval(sendUpdate, pushInterval);
 
+// TODO admin API for resetting game
+// TODO 2: way to watch without playing? good for sherpas
+
 http.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}.`);
 });

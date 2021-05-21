@@ -1,99 +1,93 @@
 // Global objects //
-// TODO refactor all canvases/contexts into globals
-const canvas = document.getElementById("mapCanvas");
+const mapCan = document.getElementById("mapCanvas");
+const mapCtx = mapCan.getContext("2d");
 const mapSize = 0.003614; // approx. quarter mile
 
-const revealCanvas = document.getElementById("revealCanvas");
-var lastCenter = null;
+const revealCan = document.getElementById("revealCanvas");
+const revealCtx = revealCan.getContext("2d");
 const brushRadius = 20; // TODO playtest this
+var lastCenter = null;
 
-function clear(canvas) {
-    var ctx = canvas.getContext("2d");
-    ctx.beginPath();
-    ctx.rect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "black";
-    ctx.fill();
+/* function for map canvas */
+
+function clearMap() {
+    mapCtx.beginPath();
+    mapCtx.rect(0, 0, mapCan.width, mapCan.height);
+    mapCtx.fillStyle = "black";
+    mapCtx.fill();
 }
 
-function dot(canvas, x, y, r, col) {
-    var ctx = canvas.getContext("2d");
-
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, 2 * Math.PI, false);
-    ctx.fillStyle = col;
-    ctx.fill();
+function dot(x, y, r, col) {
+    mapCtx.beginPath();
+    mapCtx.arc(x, y, r, 0, 2 * Math.PI, false);
+    mapCtx.fillStyle = col;
+    mapCtx.fill();
 }
 
 /* https://stackoverflow.com/questions/15397036/drawing-dashed-lines-on-html5-canvas */
-function dottedLine(canvas, x1, y1, x2, y2, col) {
-    var ctx = canvas.getContext("2d");
-
-    ctx.setLineDash([5, 3]); /* 5px dashes, 3px spaces */
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.strokeStyle = col;
-    ctx.stroke();
+function dottedLine(x1, y1, x2, y2, col) {
+    mapCtx.setLineDash([5, 3]); /* 5px dashes, 3px spaces */
+    mapCtx.beginPath();
+    mapCtx.moveTo(x1, y1);
+    mapCtx.lineTo(x2, y2);
+    mapCtx.strokeStyle = col;
+    mapCtx.stroke();
 }
 
-function text(canvas, x, y, col, text) {
-    var ctx = canvas.getContext("2d");
-    ctx.font = "12px Arial";
-    ctx.textAlign = "center";
-    ctx.fillStyle = col;
-    ctx.fillText(text, x, y);
+function text(x, y, col, text) {
+    mapCtx.font = "12px Arial";
+    mapCtx.textAlign = "center";
+    mapCtx.fillStyle = col;
+    mapCtx.fillText(text, x, y);
 }
 
 function setup() {
-    var revealCtx = revealCanvas.getContext("2d");
+    mapCan.height = mapCan.width;
+    revealCan.height = revealCan.width;
+    // TODO better aspect ratios (pending puzzle redesign)
 
     var img = new Image();
 
-    img.onload = function(){
-        revealCtx.drawImage(img, 0, 0, revealCanvas.width, revealCanvas.height);
+    img.onload = function() {
+        revealCtx.drawImage(img, 0, 0, revealCan.width, revealCan.height);
     }
-    img.loc = '/resources/';
-    img.filename = 'cover.png';
-    img.src = img.loc + img.filename;
+    img.src = '/resources/cover.png';
 }
 
-function revealDot(ctx, x, y){
-    ctx.beginPath();
-    ctx.arc(x, y, brushRadius, 0, 2*Math.PI, true);
-    ctx.fillStyle = '#000';
-    ctx.globalCompositeOperation = "destination-out";
-    ctx.fill();
+function revealDot(x, y){
+    revealCtx.beginPath();
+    revealCtx.arc(x, y, brushRadius, 0, 2*Math.PI, true);
+    revealCtx.fillStyle = '#000';
+    revealCtx.globalCompositeOperation = "destination-out";
+    revealCtx.fill();
 }
 
-function revealPath(ctx, x1, y1, x2, y2) {
+function revealPath(x1, y1, x2, y2) {
     if (x1 > x2) {
-        return revealPath(ctx, x2, y2, x1, y1)
+        return revealPath(x2, y2, x1, y1)
     }
 
     var slope = (y2 - y1) / (x2 - x1);
     for (var x = Math.floor(x1); x < x2; x++) {
-        revealDot(ctx, x, slope * (x - x1) + y1);
+        revealDot(x, slope * (x - x1) + y1);
     }
 
-    // TODO vertical lines
+    // TODO steep/vertical lines
 }
 
 function update(locData) {
-    canvas.height = canvas.width;
-    revealCanvas.height = revealCanvas.width;
+    clearMap();
 
-    clear(canvas);
-
-    var midX = canvas.width / 2, midY = canvas.height / 2;
-    var transformX = (x) => canvas.width * x / mapSize + midX;
-    var transformY = (y) => canvas.height * y / mapSize + midY;
+    var midX = mapCan.width / 2, midY = mapCan.height / 2;
+    var transformX = (x) => mapCan.width * x / mapSize + midX;
+    var transformY = (y) => mapCan.height * y / mapSize + midY;
 
     // emphasize home with crosshairs through center
-    dottedLine(canvas, midX, 0, midX, canvas.height, 'white');
-    dottedLine(canvas, 0, midY, canvas.width, midY, 'white');
+    dottedLine(mapCan, midX, 0, midX, mapCan.height, 'white');
+    dottedLine(mapCan, 0, midY, mapCan.width, midY, 'white');
 
     // current location dot
-    dot(canvas, transformX(locData.local.x), transformY(locData.local.y),
+    dot(transformX(locData.local.x), transformY(locData.local.y),
         5, 'blue');
 
     if (locData.server) {
@@ -102,30 +96,29 @@ function update(locData) {
         // mean of player positions
         var centerX = transformX(locData.server.center.x),
             centerY = transformY(locData.server.center.y);
-        dot(canvas, centerX, centerY, 5, 'red');
+        dot(centerX, centerY, 5, 'red');
 
         // draw users
         for (let p in locData.server.players) {
-            dottedLine(canvas, transformX(locData.server.players[p].x),
+            dottedLine(transformX(locData.server.players[p].x),
                 transformY(locData.server.players[p].y), centerX, centerY, 'red');
         }
         for (let p in locData.server.players) {
             if (!p) {
                 continue; // avoid mysterious "undefined" label
             }
-            text(canvas, transformX(locData.server.players[p].x),
+            text(transformX(locData.server.players[p].x),
                 transformY(locData.server.players[p].y), 'white', p);
         }
-    }
 
-    // update actual puzzle
-    var revealCtx = revealCanvas.getContext("2d");
-    if (lastCenter) {
-        revealPath(revealCtx, lastCenter.x, lastCenter.y, centerX, centerY);
-    } else {
-        revealDot(revealCtx, centerX, centerY);
+        // update actual puzzle
+        if (lastCenter) {
+            revealPath(lastCenter.x, lastCenter.y, centerX, centerY);
+        } else {
+            revealDot(centerX, centerY);
+        }
+        lastCenter = {x: centerX, y: centerY};
     }
-    lastCenter = {x: centerX, y: centerY};
 }
 
 export { setup, update };
