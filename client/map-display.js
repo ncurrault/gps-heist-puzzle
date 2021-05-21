@@ -69,6 +69,9 @@ function drawCanvas(locData) {
                 transformY(locData.server.players[p].y), centerX, centerY, 'red');
         }
         for (let p in locData.server.players) {
+            if (!p) {
+                continue; // avoid mysterious "undefined" label
+            }
             text(canvas, transformX(locData.server.players[p].x),
                 transformY(locData.server.players[p].y), p);
         }
