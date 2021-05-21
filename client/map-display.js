@@ -57,7 +57,7 @@ function drawCanvas(locData) {
 
     // mean of player positions
     var centerX = transformX(locData.server.center.x),
-        canterY = transformY(locData.server.center.y);
+        centerY = transformY(locData.server.center.y);
     dot(canvas, centerX, centerY, 5, 'red');
 
     // draw users
