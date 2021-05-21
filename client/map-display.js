@@ -1,8 +1,11 @@
 // Global objects //
-const canvas = document.getElementById("mazeCanvas");
-const homeRadius = 10;
-const currRadius = 10;
+// TODO refactor all canvases/contexts into globals
+const canvas = document.getElementById("mapCanvas");
 const mapSize = 0.003614; // approx. quarter mile
+
+const revealCanvas = document.getElementById("revealCanvas");
+var lastCenter = null;
+const brushRadius = 20; // TODO playtest this
 
 function clear(canvas) {
     var ctx = canvas.getContext("2d");
@@ -41,8 +44,44 @@ function text(canvas, x, y, col, text) {
     ctx.fillText(text, x, y);
 }
 
-function drawCanvas(locData) {
+function setup() {
+    var revealCtx = revealCanvas.getContext("2d");
+
+    var img = new Image();
+
+    img.onload = function(){
+        revealCtx.drawImage(img, 0, 0, revealCanvas.width, revealCanvas.height);
+    }
+    img.loc = '/resources/';
+    img.filename = 'cover.png';
+    img.src = img.loc + img.filename;
+}
+
+function revealDot(ctx, x, y){
+    ctx.beginPath();
+    ctx.arc(x, y, brushRadius, 0, 2*Math.PI, true);
+    ctx.fillStyle = '#000';
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.fill();
+}
+
+function revealPath(ctx, x1, y1, x2, y2) {
+    if (x1 > x2) {
+        return revealPath(ctx, x2, y2, x1, y1)
+    }
+
+    var slope = (y2 - y1) / (x2 - x1);
+    for (var x = Math.floor(x1); x < x2; x++) {
+        revealDot(ctx, x, slope * (x - x1) + y1);
+    }
+
+    // TODO vertical lines
+}
+
+function update(locData) {
     canvas.height = canvas.width;
+    revealCanvas.height = revealCanvas.width;
+
     clear(canvas);
 
     var midX = canvas.width / 2, midY = canvas.height / 2;
@@ -78,6 +117,15 @@ function drawCanvas(locData) {
                 transformY(locData.server.players[p].y), 'white', p);
         }
     }
+
+    // update actual puzzle
+    var revealCtx = revealCanvas.getContext("2d");
+    if (lastCenter) {
+        revealPath(revealCtx, lastCenter.x, lastCenter.y, centerX, centerY);
+    } else {
+        revealDot(revealCtx, centerX, centerY);
+    }
+    lastCenter = {x: centerX, y: centerY};
 }
 
-export { drawCanvas };
+export { setup, update };

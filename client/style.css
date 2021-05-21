@@ -7,9 +7,15 @@ body {
     overflow: hidden;
 }
 
-#mazeCanvas {
+#mapCanvas {
     display: block;
     width: 100%;
+}
+#revealCanvas {
+    display: block;
+    width: 100%;
+    background-image: url('/resources/map.png');
+    background-size: cover;
 }
 
 #controlBtns {

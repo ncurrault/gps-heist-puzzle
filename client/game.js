@@ -32,6 +32,8 @@ function registerPlayer(e) {
 document.getElementById("lobbyForm").addEventListener("submit", registerPlayer);
 
 function startGame() {
+    Map.setup();
+
     // Replace lobby HTML with game HTML
     document.getElementById("lobby").hidden = true;
     document.getElementById("game").hidden = false;
@@ -57,7 +59,7 @@ socket.on("registerFailed", lobbyError);
 
 // Graphics updates prompted by either (local) loc change or server ping
 function graphicsStep() {
-    Map.drawCanvas(locData);
+    Map.update(locData);
 }
 
 function onLocUpdate(newLoc) {
