@@ -46,7 +46,7 @@ function drawCanvas(locData) {
     // current dot
     var currX = canvas.width * locData.local.x / mapSize + midX;
     var currY = canvas.height * locData.local.y / mapSize + midY;
-    dot(canvas, midX, midY, 5, 'blue');
+    dot(canvas, currX, currY, 5, 'blue');
 
     // TODO draw other users, each labelled with initials
     // TODO draw mean pos as a dot
