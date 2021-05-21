@@ -1,6 +1,6 @@
 {
   "name": "gps-heist-puzzle",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Outdoor GPS puzzle for Ditch Day 2021",
   "main": "server.js",
   "scripts": {

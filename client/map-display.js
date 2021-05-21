@@ -84,8 +84,8 @@ function update(locData) {
     var transformY = (y) => mapCan.height * y / mapSize + midY;
 
     // emphasize home with crosshairs through center
-    dottedLine(mapCan, midX, 0, midX, mapCan.height, 'white');
-    dottedLine(mapCan, 0, midY, mapCan.width, midY, 'white');
+    dottedLine(midX, 0, midX, mapCan.height, 'white');
+    dottedLine(0, midY, mapCan.width, midY, 'white');
 
     // current location dot
     dot(transformX(locData.local.x), transformY(locData.local.y),
