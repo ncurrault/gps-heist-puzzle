@@ -31,7 +31,7 @@ function registerPlayer(e) {
      * Check everything we can locally before trying to register with the server
      */
 
-    var locationErr = Loc.setup(onLocUpdate, lobbyError, () => {
+    Loc.setup(onLocUpdate, lobbyError, () => {
         Map.setup(() => {
             socket.emit("register", username);
         }, lobbyError);
@@ -69,6 +69,5 @@ function onLocUpdate(newLoc) {
 function onServerUpdate(serverData) {
     locData.server = serverData;
 
-    // TODO list other users somewhere else in the interface?
     graphicsStep();
 }

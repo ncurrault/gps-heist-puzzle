@@ -5,7 +5,7 @@ const mapSize = 0.003614; // approx. quarter mile
 
 const revealCan = document.getElementById("revealCanvas");
 const revealCtx = revealCan.getContext("2d");
-const brushRadius = 20; // TODO playtest this
+const brushRadius = 20;
 var lastCenter = null;
 
 /* function for map canvas */
@@ -64,6 +64,7 @@ function setup(successCallback, errorCallback) {
     img.src = '/resources/cover.png';
 }
 
+/* https://codemyui.com/html5-canvas-scratch-off-reveal-image-animation/ */
 function revealDot(x, y){
     revealCtx.beginPath();
     revealCtx.arc(x, y, brushRadius, 0, 2*Math.PI, true);
